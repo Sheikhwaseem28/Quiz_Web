@@ -1,0 +1,190 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Application</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: antiquewhite;
+      background-color: #0a0202;
+    }
+    .container {
+      width: 100vw;
+      height: 100vh;
+      color: azure;
+      margin: 0 auto;
+      text-align: center;
+      background-color:#0a0202;
+    }
+
+    button {
+      display: block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #dd7004;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 15vw;
+    }
+    #Next{
+      margin-left: 40vw;
+      width: 20vw;
+    }
+    #question {
+      font-size: 20px;
+      margin-bottom: 20px;
+      background-color: #0a0202;
+      color: azure;
+    }
+    #options {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #0a0202;
+    }
+    .option {
+      margin: 10px;
+    }
+    #answer{
+      margin-top: 20px;
+    }
+  </style>
+
+</head>
+<body>
+  <div class="container">
+    <h1>Quiz Application</h1>
+    <div id="question"></div>
+    <div id="options"></div>
+    <br>
+    <div id="timer"></div>
+    <br>
+    <button id="Next" onclick="nextQuestion()">Next</button>
+    <div id="answer"></div>
+  </div>
+
+  <script>
+    // Define quiz questions
+    const questions = [
+      {
+        question: "What is the capital of France?",
+        options: ["Paris", "London", "Berlin", "Madrid"],
+        answer: "Paris"
+      },
+      {
+        question: "What is 2 + 2?",
+        options: ["3", "4", "5", "6"],
+        answer: "4"
+      },
+      {
+        question: "Who wrote 'Romeo and Juliet'?",
+        options: ["Shakespeare", "Hemingway", "Fitzgerald", "Twain"],
+        answer: "Shakespeare"
+      },
+      {
+        question: "Which is the Natinal Animal of India?",
+        options: ["Paris", "London", "Berlin", "Madrid"],
+        answer: "Paris"
+      },
+      {
+        question: "Which is the Natinal Bird of India?",
+        options: ["Paris", "London", "Berlin", "Madrid"],
+        answer: "Paris"
+      },
+    ];
+    const questionElement = document.getElementById('question');
+const optionsElement = document.getElementById('options');
+const Answer = document.getElementById("answer");
+const time = document.getElementById("timer");
+const nextt = document.querySelectorAll("button");
+
+    let currentQuestionIndex = 0;
+    let timer;
+    let score=0;
+    
+    // Shuffle questions array
+    function shuffleQuestions(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+    
+    function displayQuestion() {
+      
+      const currentQuestion = questions[currentQuestionIndex];
+      
+      questionElement.textContent = currentQuestion.question;
+      optionsElement.innerHTML = "";
+
+      currentQuestion.options.forEach(option => {
+        const optionButton = document.createElement("button");
+        optionButton.textContent = option;
+        optionButton.classList.add("option");
+        optionButton.onclick = () => checkAnswer(option);
+        optionsElement.appendChild(optionButton);
+      });
+
+      startTimer();
+    }
+
+    function startTimer() {
+      let timeLeft = 10; // 10 seconds per question
+      const timerElement = document.getElementById("timer");
+      timer = setInterval(() => {
+        timerElement.textContent = `Time left: ${timeLeft} seconds`;
+        timeLeft--;
+
+        if (timeLeft < 0) {
+          clearInterval(timer);
+          nextQuestion();
+        }
+      }, 1000);
+    }
+
+    function checkAnswer(selectedOption) {
+      clearInterval(timer);
+      const currentQuestion = questions[currentQuestionIndex];
+      if (selectedOption === currentQuestion.answer) {
+        score++;
+        Answer.style.color='green';
+        Answer.textContent='Correct!';
+      } else {
+        Answer.style.color='red';
+        Answer.textContent='Wrong!';
+      }
+      nextQuestion();
+    }
+
+    function nextQuestion() {
+      clearInterval(timer);
+      currentQuestionIndex++;
+      if (currentQuestionIndex >= questions.length) {
+        Answer.style.fontSize='40px';
+        if(score>=3){
+        Answer.style.color='green';
+        }
+        else{
+          Answer.style.color='red';
+        }
+        Answer.innerHTML = `<h2>Your Score: ${score}/${questions.length}</h2>`;
+        alert("Quiz is Over !")
+        clearInterval(timer);
+        return;
+      }
+      displayQuestion();
+    }
+    // Shuffle questions when page loads
+    window.onload = () => {
+      shuffleQuestions(questions);
+      displayQuestion();
+    };
+  </script>
+</body>
+</html>
+
